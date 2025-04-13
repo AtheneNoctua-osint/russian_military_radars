@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
+    <meta charset="utf-8">
+    <title>Russian Military Radars</title>
+    <style>
+      html, body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        }
+        #container {
+          height: 100%;
+          display: flex;
+        }
+        #sidebar {
+          flex-basis: 15rem;
+          flex-grow: 1;
+          padding: 1rem;
+          max-width: 30rem;
+          height: 100%;
+          box-sizing: border-box;
+          overflow: auto;
+        }
+        #map {
+          flex-basis: 0;
+          flex-grow: 4;
+          height: 100%;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="map"></div>
+      <div id="sidebar"></div>
+      <div id="capture"></div>
+    </div>
+    <script>
+      var map;
+      var src = 'https://raw.githubusercontent.com/AtheneNoctua-osint/russian_military_radars/refs/heads/main/Radar%20Idenfitication.kml';
+
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 4,
+          center: { lat: 49.496675, lng: -102.65625 },
+       });
+
+        var kmlLayer = new google.maps.KmlLayer(src, {
+          suppressInfoWindows: false,
+          preserveViewport: false,
+          map: map
+        });
+        kmlLayer.addListener('click', function(event) {
+          var content = event.featureData.infoWindowHtml;
+          var testimonial = document.getElementById('capture');
+          testimonial.innerHTML = content;
+        });
+
+        kmlLayer.addListener("click", (kmlEvent) => {
+          const text = kmlEvent.featureData.description;
+          showInContentWindow(text);
+        });
+  
+        function showInContentWindow(text) {
+          const sidebar = document.getElementById("sidebar");
+          sidebar.innerHTML = text;
+        }
+      }
+    </script>
+    <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap">
+    </script>
+  </body>
+</html>
